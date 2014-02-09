@@ -3,17 +3,17 @@
 use strict;
 use warnings;
 
-my $sum   = 2; # We'll start off with the first prime added
-my $count = 1;
-my $num   = 2;
-NUM: while ( $count < 1000 ) {
-    $num++;
+my $max = 1000;
+
+NUM: for my $num ( reverse 1 .. $max - 1) {
     $num % $_ == 0 and next NUM
         for 2 .. sqrt $num;
 
     # We have a prime number, if we got up to here
-    $sum += $num;
-    $count++;
-}
+    $num =~ /\A(.+)${\ (length($num) % 2 ? '.' : '') }\1\z/
+        or next;
 
-print "$sum\n";
+    # We have a pallindrome, if we got up to here.
+    print "$num\n";
+    exit;
+}
