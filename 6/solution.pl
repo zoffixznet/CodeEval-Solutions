@@ -8,17 +8,18 @@ open my $fh, '<', $ARGV[0] or die $!;
 while (<$fh>) {
     chomp; length or next;
     my ( $one, $two ) = split /;/;
-    my @one = split //, $one;
-    my @two = split //, $two;
+    my ( %one, %two );
+    @one{
+        glob join '', map "{$_,}", split //, $one
+    } = ();
+    @two{
+        glob join '', map "{$_,}", split //, $two
+    } = ();
+#    use Acme::Dump::And::Dumper;
+#    die DnD [ sort keys %one ];
 
-    my @sub;
-    for my $i1 ( 0 .. $#one ) {
-
-        for my $i2 ( 0 .. $#two ) {
-            if ( $two[$i2] eq $one[$i1] ) {
-                push @sub, $two[$i2];
-                next;
-            }
-        }
-    }
+    say +(
+        sort { length $b <=> length $a }
+            grep exists $two{$_}, keys %one
+    )[0];
 }
