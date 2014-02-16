@@ -4,7 +4,7 @@ use 5.014;
 use warnings;
 
 open my $fh, '<', $ARGV[0] or die $!;
-local $/;
+
 LINES: while (<$fh>) {
     chomp;
     my @stack;
