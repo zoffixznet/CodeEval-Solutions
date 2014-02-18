@@ -3,50 +3,43 @@
 use 5.014;
 use warnings;
 
+my $tree;
+insert($tree, $_)
+    for qw/30  8  52  3  20  10  29/;
 
-package ZofNode;
+open my $fh, '<', $ARGV[0] or die $!;
 
-sub new {
-    my ( $class, $val ) = @_;
-    return bless { data => $val }, $class;
+while (<$fh>) {
+    say find_lowest_ancestor($tree, sort { $a <=> $b } split ' ');
+}
+
+sub find_lowest_ancestor {
+    my ( $tree, $n1, $n2 ) = @_;
+
+    my $v = $tree->{val};
+    if ( $n1 <= $v and $n2 <= $v ) {
+        return $v if $n1 == $v or $n2 == $v;
+        return find_lowest_ancestor( $tree->{left}, $n1, $n2 );
+    }
+
+    return find_lowest_ancestor( $tree->{right}, $n1, $n2 )
+        if $n1 > $v and $n2 > $v;
+
+    return $v;
 }
 
 sub insert {
-    my ( $self, $tree, $val ) = @_;
+    my ( $tree, $val ) = @_;
 
     unless ( $tree ) {
-        $tree = Node->new( $val );
+        $_[0] = { val => $val, };
         return;
     }
 
-    if ( $val < $tree->{data} ) {
-        $tree->insert
-    }
-}
-
-__END__
-
-void insert(node ** tree, int val)
-{
-    node *temp = NULL;
-    if(!(*tree))
-    {
-        temp = (node *)malloc(sizeof(node));
-        temp->left = temp->right = NULL;
-        temp->data = val;
-        *tree = temp;
-        return;
-    }
-
-    if(val < (*tree)->data)
-    {
-        insert(&(*tree)->left, val);
-    }
-    else if(val > (*tree)->data)
-    {
-        insert(&(*tree)->right, val);
-    }
-
+    insert(
+        $tree->{ $tree->{val} < $val ? 'right' : 'left' },
+        $val,
+    );
 }
 
 __END__
