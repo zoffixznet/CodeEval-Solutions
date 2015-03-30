@@ -1,10 +1,3 @@
-#!/usr/bin/env perl
-
-use 5.014;
-
-open my $fh, '<', $ARGV[0] or die $!;
-
-while (<$fh>) {
-    chomp;
-    say hex;
-}
+#!perl -n
+use 5.010;
+say hex;
